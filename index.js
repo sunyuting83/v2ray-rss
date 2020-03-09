@@ -6,7 +6,7 @@ const Koa = require('koa'),
       https = require('https');
 
 function getData() {
-  var thisu = url.parse('https://t.me/s/V2List', true)
+  var thisu = url.parse('https://cors.zme.ink/https://t.me/s/V2List', true)
   var options = {
       hostname: thisu.host,
       method: 'GET',
@@ -48,18 +48,19 @@ function makeData(data) {
   let d = $($ls).eq(count).find('div.tgme_widget_message_text').text()
   if(d.includes('节点精选')) {d = d.substring(0, d.lastIndexOf('节点精选') -2)}
   // d = Buffer.from(d).toString('base64')
-  if(d.includes("\n")) {
-    d = Buffer.from(d).toString('base64')
-  }else {
-    d = d.split('vmess://')
-    for( i in d) {
-      d[i] = 'vmess://' + d[i]
-    }
-    d = d.filter((x, i) => i !== 0)
-    d = d.join('\r')
-    // console.log(d)
-    d = Buffer.from(d).toString('base64')
+  d = d.split('vmess://')
+  for( i in d) {
+    // d[i] = 'vmess://' + d[i]
+    d[i] = Buffer.from(d[i], 'base64').toString('utf8')
+    d[i] = d[i].replace(/翻墙党fanqiangdang.com/g, 'whaaat免费节点' + i)
+    d[i] = d[i].replace(/@jdgxq  节点共享群TG电报搜索/g, 'whaaat免费节点' + i)
+    d[i] = d[i].replace(/节点共享群TG电报搜 @jdgxq/g, 'whaaat免费节点' + i)
+    d[i] = Buffer.from(d[i]).toString('base64')
+    d[i] = 'vmess://' + d[i]
   }
+  d = d.filter((x, i) => i !== 0)
+  d = d.join('\r')
+  d = Buffer.from(d).toString('base64')
   return d
 }
 
